@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "module": "system",
+      "noImplicitAny": true,
+      "removeComments": true,
+      "preserveConstEnums": true,
+      "outFile": "../../built/local/tsc.js",
+      "sourceMap": true,
+      "lib": ["dom"],
+      "jsx": "preserve"
+    },
+    "include": ["src/**/*", "src/custom.d.ts"],
+    "exclude": ["**/*.spec.ts"]
+  }

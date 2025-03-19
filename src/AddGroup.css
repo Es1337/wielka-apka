@@ -1,0 +1,23 @@
+.add-group {
+    --t:10px;   /* Thickness */
+    --l:150px;  /* size of the symbol */
+    --s:25px;  /* space around the symbol */
+    --c1: rgb(48, 48, 48); /* Plus color*/
+    --c2:salmon; /* background color*/
+
+    width:var(--l);
+    height:var(--l);
+    padding:var(--s);
+    box-sizing:border-box;
+    border-radius: 50%; 
+    
+    background:
+        linear-gradient(var(--c1) 0 0) content-box,
+        linear-gradient(var(--c1) 0 0) content-box,
+        var(--c2);
+    background-position:center;
+    background-size: 100% var(--t),var(--t) 100%;
+    background-repeat:no-repeat;
+    align-self: center;
+    justify-self: center;
+}
