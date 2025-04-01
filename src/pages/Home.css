@@ -1,0 +1,30 @@
+#root {
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+  }
+  
+  .card {
+    padding: 2em;
+  }
+  
+  .container {
+    display: grid;
+    list-style-type: none;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    margin: 0 4em;
+    padding: 4em 1em 1em 1em;
+  }
+  
+  .sidebar-toggle {
+    position: fixed;
+    top: 2%;
+    left: 2%;
+    z-index: 1;
+  }
+
+li {
+  padding: 2em;
+}
+  

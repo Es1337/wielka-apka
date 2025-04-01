@@ -3,8 +3,9 @@ import './AddGroup.css'
 
 const AddGroup: React.FC = () => {
     return (
-            <div className='add-group'>
-            </div>
+        <div className='group-card'>
+            <span className='add-group'/>
+        </div>
     )
 }
 

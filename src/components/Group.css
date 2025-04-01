@@ -1,0 +1,6 @@
+.group-card {
+    display: flex;
+    justify-self: center;
+    align-self: center;
+    height: 100%;
+}
