@@ -2,46 +2,36 @@ import React, { useEffect, useRef, useState } from "react";
 import Group from "../components/Group";
 import AddGroup from "../components/AddGroup";
 import './Home.css'
+import { Link } from "react-router-dom";
+import Menu from "../components/menu/Menu";
 
-const groups = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 }
-]
 
 const Home: React.FC = () => {
-    const [sidebarToggled, setSidebarToggled] = useState(false)
-    const sidebarRef = useRef(null)
+    type GroupType = {
+        id: number,
+        title: string
+    }
+    
+    const groups = [
+        { id: 1, title: "Group 1" },
+        { id: 2, title: "Group 2" },
+        { id: 3, title: "Group 3" }
+    ];
 
-    useEffect(() => {
-        function sidebarCloseHandler(e: MouseEvent) {
-        if (sidebarRef.current) {
-            if (e.target instanceof HTMLElement 
-            && !e.target.classList.contains('sidebar')
-            && !e.target.classList.contains('sidebar-toggle')) {
-            setSidebarToggled(false)
-            }
-        }
-        }
-
-        document.addEventListener("click", sidebarCloseHandler)
-
-        return () => {
-        document.removeEventListener("click", sidebarCloseHandler)
-        }
-    })
+    
 
     return (
         <>
-            <button className='sidebar-toggle' onClick={() => setSidebarToggled(true)}>Menu</button>
-            <nav className={`${sidebarToggled ? 'visible' : ''} sidebar`} ref={sidebarRef}>
-                Navbar
-            </nav>
-
+            <Menu/>
             <ul className="container">
-                <li><Group/></li>
-                <li><Group/></li>
-                <li><Group/></li>
+                {Object.values(groups).map((group: GroupType) => (
+                        <li key={group.id}>
+                            <Link to={`/group/${group.id}`}>
+                                <Group />
+                            </Link>
+                        </li>
+                    ))
+                }
                 <li><AddGroup/></li>
             </ul>
         </>

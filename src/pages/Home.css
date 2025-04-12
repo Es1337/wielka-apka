@@ -16,13 +16,6 @@
     margin: 0 4em;
     padding: 4em 1em 1em 1em;
   }
-  
-  .sidebar-toggle {
-    position: fixed;
-    top: 2%;
-    left: 2%;
-    z-index: 1;
-  }
 
 li {
   padding: 2em;

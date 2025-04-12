@@ -1,0 +1,73 @@
+.table-container {
+    width: 100%;
+}
+
+.table {
+    display: block;
+    overflow: hidden;
+    table-layout: fixed;
+    border-collapse: collapse;
+    box-shadow: 0px 10px 10px red;
+    border-radius: 10px;
+    white-space: preserve nowrap;
+}
+
+.table thead {
+    background-color: orange;
+    color: black;
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+}
+
+.table th:first-child {
+    background-color: gold;
+}
+
+.table td:first-child {
+    background-color:violet;
+}
+
+.table td {
+    border-top: 0.5px solid green;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table tbody td:nth-child(n+2):hover {
+    background-color: darkseagreen;
+}
+
+.expand { 
+    width: 100%;
+}
+
+.label {
+    border-radius: 3px;
+    padding: 0.3rem;
+    color:skyblue;
+}
+
+.label-draft {
+    background-color: grey;
+}
+
+.label-live {
+    background-color: chartreuse;
+}
+
+.label-error {
+    background-color: red;
+}
+
+.actions {
+    display: flex;
+    justify-content: space-around;
+    cursor: pointer;
+}
+
+.delete-btn {
+    color: darkred;
+}

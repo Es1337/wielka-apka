@@ -4,10 +4,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css'
 import Home from './pages/Home';
 import GroupView from './components/group_view/GroupView';
+import TrainingView from './components/training_view/TrainingView';
 
 const router = createBrowserRouter([
   { path: '/', element: <Home/> },
-  { path: '/group/:id', element: <GroupView/> }
+  { path: '/group/:group-id', element: <GroupView/> },
+  { path: '/group/:group-id/training/:training-id', element: <TrainingView/> }
 ]);
 
 createRoot(document.getElementById('root')).render(
