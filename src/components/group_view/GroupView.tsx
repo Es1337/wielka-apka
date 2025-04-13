@@ -12,17 +12,17 @@ const GroupView: React.FC = () => {
     return (
         <>
             <Menu/>
-            {
-                Object.values(trainings).map((training) => (
-                    <Link to={window.location.href + `/training/${training.id}`}>
-                        <div>
-                            <span>{training.title}</span>
-                            <span>{training.date}</span>
-                        </div>
-                    </Link>
-                ))
-            }
-            GroupView
+                <div className='training-container'>
+                    {
+                        Object.values(trainings).map((training) => (
+                            <Link className='training-row' to={window.location.href + `/training/${training.id}`}>
+                                <span className='text-box'>{training.title}</span>
+                                <span className='text-box'>{training.date}</span>
+                            </Link>
+                        ))
+                    }
+                    <div className='training-row pseudo-link'><span className='add-training'/></div>
+                </div>
         </>
     )
 }

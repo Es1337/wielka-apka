@@ -1,0 +1,58 @@
+.training-row {
+    margin: 3px 0;
+    padding: 5px 0;
+    width: 50%;
+    justify-content: space-between;
+    background-color: darkgrey;
+    color: black;
+    border-top: 0.5px solid green;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.1s ease;
+}
+
+.training-row:hover {
+    background-color: #e0e0e0; /* Changes background color on hover */
+}
+
+.text-box {
+    margin: 0 10px;
+}
+
+.training-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.add-training {
+    display: flex;
+    --t:3px;   /* Thickness */
+    --l:30px;  /* size of the symbol */
+    --s:6px;  /* space around the symbol */
+    --c1: rgb(48, 48, 48); /* Plus color*/
+    --c2:salmon; /* background color*/
+
+    width:var(--l);
+    height:var(--l);
+    padding:var(--s);
+    box-sizing:border-box;
+    border-radius: 50%; 
+    
+    background:
+        linear-gradient(var(--c1) 0 0) content-box,
+        linear-gradient(var(--c1) 0 0) content-box,
+        var(--c2);
+    background-position:center;
+    background-size: 100% var(--t),var(--t) 100%;
+    background-repeat:no-repeat;
+    align-self: center;
+    justify-self: center;
+}
+
+.pseudo-link {
+    cursor: pointer;
+}

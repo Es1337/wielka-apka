@@ -1,22 +1,16 @@
+import Menu from "../menu/Menu";
 import Table from "../table/Table";
 
 const TrainingView: React.FC = () => {
-    const training = [
-        { participants: [
-            {name: "Participant 1", exercises: [ {name: "Leg Press", score: "100"}, {name: "Bench Press", score: "50"}]},
-            {name: "Participant 2", exercises: [ {name: "Leg Press", score: "150"}]}
-        ]}
-    ]
+    const exercises = [{name: "Leg Press", results: ["100", "80", ""]}, {name: "Bench Press", results: ["150", "", "150"]},]
 
-    const exercises = [
-        "Leg Press",
-        "Bench Press"
-    ]
-    
+    const participants = ["111111", "22222", "33333"]
+
     return (
         <>
+            <Menu/>
             <div className="container">
-                <Table></Table>
+                <Table rowData={exercises} colData={participants}></Table>
             </div>
         </>
     )

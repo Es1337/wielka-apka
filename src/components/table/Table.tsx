@@ -1,10 +1,11 @@
 import "./Table.css"
-import { GoPencil } from "react-icons/go"
 
-const Table: React.FC = () => {
-    const exercises = [{name: "Leg Press", results: ["100", "80", ""]}, {name: "Bench Press", results: ["150", "", "150"]},]
+interface TableProps {
+    rowData: { name: string; results: string[] }[];
+    colData: string[];
+}
 
-    const participants = ["111111", "22222", "33333"]
+const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData }) => {
 
     return (
         <div className="table-container">
@@ -12,20 +13,21 @@ const Table: React.FC = () => {
                 <thead>
                     <tr>
                         <th></th>
-                        {participants.map((participant) => <th>{participant}</th>)}
-                        <th></th>
+                        {colData.map((col) => <th>{col}</th>)}
                     </tr>
                 </thead>
                 <tbody>
-                    {exercises.map((exercise) => 
+                    {rowData.map((row) => 
                         <tr>
                             <td>
-                                {exercise.name}
+                                {row.name}
                             </td>
-                            {exercise.results.map((res) => <td>{res}</td>)}
-                            <td><span className="actions"><GoPencil/></span></td>
+                            {row.results.map((res) => <td className="actions">{res}</td>)}
                         </tr>
                     )}
+                    <tr className="add-row">
+                        <td colSpan={colData.length + 1}><span className="add-row add"/></td>
+                    </tr>
                 </tbody>
             </table>
         </div>

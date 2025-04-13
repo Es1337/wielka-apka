@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Menu: React.FC = () => {
     const [sidebarToggled, setSidebarToggled] = useState(false)
     const sidebarRef = useRef(null)
+    const navigate = useNavigate();
 
     useEffect(() => {
         function sidebarCloseHandler(e: MouseEvent) {
@@ -26,7 +28,7 @@ const Menu: React.FC = () => {
         <>
             <button className='sidebar-toggle' onClick={() => setSidebarToggled(true)}>Menu</button>
             <nav className={`${sidebarToggled ? 'visible' : ''} sidebar`} ref={sidebarRef}>
-                Navbar
+                <button onClick={() => navigate(-1)}>Back</button>
             </nav>
         </>
     )

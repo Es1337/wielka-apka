@@ -7,8 +7,9 @@
       "outFile": "../../built/local/tsc.js",
       "sourceMap": true,
       "lib": ["dom", "ES2017"],
-      "jsx": "preserve"
+      "jsx": "preserve",
+      "moduleResolution": "node"
     },
     "include": ["src/**/*", "src/custom.d.ts"],
-    "exclude": ["**/*.spec.ts"]
+    "exclude": ["**/*.spec.ts", "node_modules"]
   }
