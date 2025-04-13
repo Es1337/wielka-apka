@@ -1,0 +1,68 @@
+.h-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    backdrop-filter: blur(5px); /* Blurred background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensures it appears above other content */
+}
+
+.modal-box {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background: orange;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.modal-box h1 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.modal-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal-box input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-box button {
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+}
+
+.submit-btn {
+    align-self:center;
+}
+
+.close-btn {
+    align-self: last baseline;
+}
+
+.modal-box button:hover {
+    background-color: #ff1a1a;
+}

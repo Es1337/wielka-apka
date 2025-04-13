@@ -3,12 +3,13 @@ import "./Table.css"
 interface TableProps {
     rowData: { name: string; results: string[] }[];
     colData: string[];
+    addRowCallback: () => void;
 }
 
-const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData }) => {
-
+const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRowCallback: addRowCallback }) => {    
     return (
         <div className="table-container">
+            
             <table className="table">
                 <thead>
                     <tr>
@@ -26,7 +27,7 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData }) => 
                         </tr>
                     )}
                     <tr className="add-row">
-                        <td colSpan={colData.length + 1}><span className="add-row add"/></td>
+                        <td onClick={addRowCallback} colSpan={colData.length + 1}><span className="add-row add"/></td>
                     </tr>
                 </tbody>
             </table>

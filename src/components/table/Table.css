@@ -1,5 +1,6 @@
 .table-container {
-    width: 100%;
+    display: flex;
+    justify-self: center;
 }
 
 .table {
