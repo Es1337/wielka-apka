@@ -6,11 +6,23 @@ import Home from './pages/Home';
 import GroupView from './components/group_view/GroupView';
 import TrainingView from './components/training_view/TrainingView';
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import PrivateRoutes from './PrivateRoutes';
 
 const router = createBrowserRouter([
-  { path: '/', element: <Home/> },
-  { path: '/group/:group-id', element: <GroupView/> },
-  { path: '/group/:group-id/training/:training-id', element: <TrainingView/> }
+  { 
+    path: '/', 
+    element: <Home/> },
+  { 
+    element: <PrivateRoutes/>, 
+    children: [
+      { 
+        path: '/group/:group-id', 
+        element: <GroupView/> },
+      { 
+        path: '/group/:group-id/training/:training-id', 
+        element: <TrainingView/> }
+    ]
+  }
 ]);
 
 createRoot(document.getElementById('root')).render(

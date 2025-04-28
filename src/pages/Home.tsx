@@ -4,9 +4,10 @@ import AddGroup from "../components/AddGroup";
 import './Home.css'
 import { Link } from "react-router-dom";
 import Menu from "../components/menu/Menu";
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse, GoogleLogin, googleLogout } from '@react-oauth/google';
 import { AxiosResponse } from "axios";
 import API from '../api'
+import Cookies from "js-cookie";
 
 const Home: React.FC = () => {
     type GroupType = {
@@ -30,6 +31,9 @@ const Home: React.FC = () => {
 		try {
 			await API.get('/logout/user');
 			setLoginStatus(false);
+            localStorage.removeItem("isAuth")
+            Cookies.remove("login");
+            googleLogout();
 		}
 		catch (e) {
 			console.log(e);
@@ -39,10 +43,10 @@ const Home: React.FC = () => {
 	useEffect(() => {
 		async function getStatus() {
 			try {
-				const data: AxiosResponse = await API.get('/user/checkLoginStatus');
+				const data: AxiosResponse = await API.get('/user/checkLoginStatus', {withCredentials: true});
 				const payload:CheckLoginResponse = data.data
 				if (payload.success) {
-					setLoginStatus(true);
+                    setLoginStatus(true);
 				}
 			}
 			catch (e) {
@@ -56,22 +60,31 @@ const Home: React.FC = () => {
     return (
         <>
             <Menu/>
-            <GoogleLogin
-                onSuccess={async (credentialResponse: CredentialResponse) => { 
-                    const bodyObject = {
-                        authId: credentialResponse.credential
-                    };
-                    try {
-                        await API.post('/login/user', bodyObject, { withCredentials: true }); 
-                        setLoginStatus(true);
-                    } catch (e) {
-                        console.log(e)
-                    }
-                }}
-                onError={() => console.log("Login failed")}
-                auto_select={true}
-            />
-            
+            {!isLoggedIn &&
+            <div className="google-login-box">
+                <GoogleLogin
+                    onSuccess={async (credentialResponse: CredentialResponse) => { 
+                        const bodyObject = {
+                            authId: credentialResponse.credential
+                        };
+                        try {
+                            await API.post('/login/user', bodyObject, { withCredentials: true }); 
+                            localStorage.setItem("isAuth", "true")
+                            setLoginStatus(true);
+                        } catch (e) {
+                            console.log(e)
+                        }
+                    }}
+                    onError={() => console.log("Login failed")}
+                    text="signin"
+                    size="large"
+                    shape="pill"
+                    width={200}
+                    theme="filled_black"
+                    />
+            </div>
+            }
+
             {isLoggedIn && 
             <>
                 <button onClick={logout}>Logout</button>
