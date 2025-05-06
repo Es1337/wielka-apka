@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Group from "../components/Group";
 import AddGroup from "../components/AddGroup";
 import './Home.css'
@@ -11,21 +11,19 @@ import Cookies from "js-cookie";
 
 const Home: React.FC = () => {
     type GroupType = {
-        id: number,
-        title: string
+        _id: Object,
+        groupName: string,
+        date: Date,
+        users: Object[]
     }
 
     type CheckLoginResponse = {
         success: boolean
     }
-    
-    const groups = [
-        { id: 1, title: "Group 1" },
-        { id: 2, title: "Group 2" },
-        { id: 3, title: "Group 3" }
-    ];
+
 
     const [isLoggedIn, setLoginStatus] = useState(false);
+    const [groups, setGroups] = useState([]);
 
     const logout = async () => {
 		try {
@@ -43,19 +41,36 @@ const Home: React.FC = () => {
 	useEffect(() => {
 		async function getStatus() {
 			try {
-				const data: AxiosResponse = await API.get('/user/checkLoginStatus', {withCredentials: true});
-				const payload:CheckLoginResponse = data.data
-				if (payload.success) {
+                if (localStorage.getItem("isAuth") === "true") {
                     setLoginStatus(true);
-				}
+                } else {
+                    const data: AxiosResponse = await API.get('/user/checkLoginStatus', {withCredentials: true});
+                    const payload:CheckLoginResponse = data.data;
+                    if (payload.success) {
+                        setLoginStatus(true);
+                    }
+                }
 			}
 			catch (e) {
 				console.log(e);
 				setLoginStatus(false);
 			}
-		}
+		};
 		getStatus();
 	}, [])
+
+    useEffect(() => {
+        async function getGroupsForUser() {
+            try {
+                const data: AxiosResponse = await API.get('/group/user', {withCredentials: true});
+                const payload:GroupType[] = data.data;
+                setGroups(payload)
+            } catch (e) {
+                console.log(e)
+            }
+        };
+        getGroupsForUser();
+    }, [isLoggedIn])
 
     return (
         <>
@@ -90,8 +105,8 @@ const Home: React.FC = () => {
                 <button onClick={logout}>Logout</button>
                 <ul className="container">
                     {Object.values(groups).map((group: GroupType) => (
-                        <li key={group.id}>
-                                <Link to={`/group/${group.id}`}>
+                        <li key={group.groupName}>
+                                <Link to={`/group/${group._id}`}>
                                     <Group />
                                 </Link>
                             </li>

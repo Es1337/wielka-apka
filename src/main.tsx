@@ -16,10 +16,10 @@ const router = createBrowserRouter([
     element: <PrivateRoutes/>, 
     children: [
       { 
-        path: '/group/:group-id', 
+        path: '/group/:groupId', 
         element: <GroupView/> },
       { 
-        path: '/group/:group-id/training/:training-id', 
+        path: '/group/:groupId/training/:trainingId', 
         element: <TrainingView/> }
     ]
   }
