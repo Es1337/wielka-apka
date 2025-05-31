@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Menu from '../menu/Menu'
 import './GroupView.css'
 import React, { useEffect, useState } from 'react'
@@ -6,25 +6,29 @@ import Modal from '../modal/Modal'
 import API from '../../api'
 import { AxiosResponse } from 'axios'
 import { GroupType } from '../../types/GroupTypes'
+import { TrainingType } from '../../types/TrainingTypes'
 
 const GroupView: React.FC = () => {
     const [showModal, setShowModal] = useState(false)
-    const [trainings, setTrainings] = useState([
-        { id: 1, date: "31.03.2025", title: "Training 1" },
-        { id: 2, date: "01.04.2025", title: "Training 2" },
-    ])
+    const [trainings, setTrainings] = useState([])
     const { groupId } = useParams();
 
     const [groupName, setGroupName] = useState('');
 
     useEffect(() => {
         async function getGroupData() {
-            let group: AxiosResponse;
+            let groupResponse: AxiosResponse;
+            let trainingsResponse: AxiosResponse;
             try {
-                group = await API.get("/group/" + groupId);
-                let payload: GroupType = group.data;
-                console.log(payload);
-                setGroupName(payload.groupName);
+                groupResponse = await API.get("/group/" + groupId, { withCredentials: true });
+                let groupPayload: GroupType = groupResponse.data;
+                console.log(groupPayload);
+                setGroupName(groupPayload.groupName);
+
+                trainingsResponse = await API.get("/group/" + groupId + "/training", { withCredentials: true });
+                let trainingPayload = trainingsResponse.data;
+                console.log(trainingPayload);
+                setTrainings(trainingPayload);
             } catch (e) {
                 console.error('Failure fetching group with id:', groupId);
             }
@@ -32,47 +36,67 @@ const GroupView: React.FC = () => {
         getGroupData();
     }, []);
 
-    function addTraining(formData: FormData) {
-        setTrainings((trainings) => ([
-            ...trainings,
-            { 
-                id: 3, 
-                date: formData.get('training-date').toString(), 
-                title: formData.get('training-name').toString()
-            }
-        ]))
+    async function addTrainingAPI(newTrainingName: string, newTrainingDate: Date): Promise<TrainingType | undefined> {
+        let training: AxiosResponse;
+        try {
+            training = await API.post("group/" + groupId + "/training", {
+                trainingName: newTrainingName,
+                date: newTrainingDate || Date.now()
+            }, { withCredentials: true });
+            let payload: TrainingType = training.data;
+            console.log(payload);
+            return payload;
+        } catch (e) {
+            console.error('Failure adding group');
+            return;
+        }
     }
 
+    const addTraining = (formData: FormData): void => {
+        addTrainingAPI(
+            formData.get('training-name').toString(),
+            new Date((formData.get('training-date').toString()))).then((training) => {
+                setTrainings((trainings) => ([
+                    ...trainings,
+                    {
+                        id: training._id,
+                        trainingName: training.trainingName,
+                        date: training.date,
+                        exercises: training.exercises
+                    }
+                ]));
+                setShowModal(false);
+            });
+    }
 
     return (
         <>
-            <Menu/>
-            {showModal && 
-            <Modal modalAction={addTraining} onClose={() => setShowModal(false)} modalHeader='Add Training'>
-                <input 
-                    type="text"
-                    name='training-name'
-                    placeholder="Enter Name..."
-                    required
+            <Menu />
+            {showModal &&
+                <Modal modalAction={addTraining} onClose={() => setShowModal(false)} modalHeader='Add Training'>
+                    <input
+                        type="text"
+                        name='training-name'
+                        placeholder="Enter Name..."
+                        required
                     />
-                <input
-                    type="date"
-                    name='training-date'
-                    required
+                    <input
+                        type="date"
+                        name='training-date'
+                        required
                     />
-            </Modal>}
+                </Modal>}
             <div className='training-container'>
-                <h2>{groupId}</h2>
                 <h2>{groupName}</h2>
                 {
                     Object.values(trainings).map((training) => (
                         <Link className='training-row' to={window.location.href + `/training/${training.id}`}>
-                            <span className='text-box'>{training.title}</span>
+                            <span className='text-box'>{training.trainingName}</span>
                             <span className='text-box'>{training.date}</span>
                         </Link>
                     ))
                 }
-                <div className='training-row pseudo-link' onClick={() => setShowModal(true)}><span className='add-training'/></div>
+                <div className='training-row pseudo-link' onClick={() => setShowModal(true)}><span className='add-training' /></div>
             </div>
         </>
     )
