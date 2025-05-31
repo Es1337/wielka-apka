@@ -8,19 +8,12 @@ import { CredentialResponse, GoogleLogin, googleLogout } from '@react-oauth/goog
 import { AxiosResponse } from "axios";
 import API from '../api'
 import Cookies from "js-cookie";
+import { GroupType } from "../types/GroupTypes";
 
 const Home: React.FC = () => {
-    type GroupType = {
-        _id: Object,
-        groupName: string,
-        date: Date,
-        users: Object[]
-    }
-
     type CheckLoginResponse = {
         success: boolean
     }
-
 
     const [isLoggedIn, setLoginStatus] = useState(false);
     const [groups, setGroups] = useState([]);
@@ -107,12 +100,12 @@ const Home: React.FC = () => {
                     {Object.values(groups).map((group: GroupType) => (
                         <li key={group.groupName}>
                                 <Link to={`/group/${group._id}`}>
-                                    <Group />
+                                    <Group groupName={group.groupName}/>
                                 </Link>
                             </li>
                         ))
                     }
-                    <li><AddGroup/></li>
+                    <li><AddGroup groupStateHandler={setGroups}/></li>
                 </ul>
             </>
             }

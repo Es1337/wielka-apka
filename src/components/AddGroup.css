@@ -21,3 +21,8 @@
     align-self: center;
     justify-self: center;
 }
+
+.add-group:hover {
+    background-color: rgb(221, 161, 154); 
+    cursor: pointer;
+}

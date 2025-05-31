@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import Modal from '../modal/Modal'
 import API from '../../api'
 import { AxiosResponse } from 'axios'
+import { GroupType } from '../../types/GroupTypes'
 
 const GroupView: React.FC = () => {
     const [showModal, setShowModal] = useState(false)
@@ -16,27 +17,12 @@ const GroupView: React.FC = () => {
 
     const [groupName, setGroupName] = useState('');
 
-    type GoogleUser = {
-        _id: Object,
-        email: string,
-        __v: number,
-        name: string,
-        picture: string
-    }
-
-    type GroupResponse = {
-        _id: Object,
-        groupName: string,
-        date: Date,
-        users: GoogleUser[]
-    }
-    
     useEffect(() => {
         async function getGroupData() {
             let group: AxiosResponse;
             try {
                 group = await API.get("/group/" + groupId);
-                let payload: GroupResponse = group.data;
+                let payload: GroupType = group.data;
                 console.log(payload);
                 setGroupName(payload.groupName);
             } catch (e) {
