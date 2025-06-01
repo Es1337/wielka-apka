@@ -1,14 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom'
 import Menu from "../menu/Menu";
 import Table from "../table/Table";
 import Modal from "../modal/Modal";
+import { AxiosResponse } from "axios";
+import API from '../../api'
+import { GroupType } from "../../types/GroupTypes";
+import { set } from "lodash";
+
 
 const TrainingView: React.FC = () => {
-    const participants = ["111111", "22222", "33333"]
+    const [users, setUsers] = useState([]);
     const [showModal, setShowModal] = useState(false)
-    const [exercises, setExercises] = useState([
-        {name: "Leg Press", results: ["100", "80", ""]}, 
-        {name: "Bench Press", results: ["150", "", "150"]},])
+    const { groupId, trainingId } = useParams();
+    const [exercises, setExercises] = useState([])
+        
+        useEffect(() => {
+        async function getTrainingData() {
+            let groupResponse: AxiosResponse;
+            let trainingsResponse: AxiosResponse;
+            try {
+                groupResponse = await API.get("/group/" + groupId, { withCredentials: true });
+                let groupPayload: GroupType = groupResponse.data;
+                console.log(groupPayload);
+                setUsers(groupPayload.users || []);
+
+                trainingsResponse = await API.get("/group/" + groupId + "/training/" + trainingId, { withCredentials: true });
+                let trainingPayload = trainingsResponse.data;
+                console.log(trainingPayload);
+                setExercises(trainingPayload.exercises || []);
+            } catch (e) {
+                console.error('Failure fetching group with id:', groupId);
+            }
+        }
+        getTrainingData();
+    }, []);
 
     function placeholder(formData: FormData) {
         let exerciseResult: string[] = []
@@ -31,16 +57,16 @@ const TrainingView: React.FC = () => {
                         placeholder="Exercise Name..."
                         required
                         />
-                    {participants.map((participant) => (
+                    {users.map((user) => (
                         <input
                             type="text"
                             name="reps"
-                            placeholder={`Reps for ${participant}...`}
+                            placeholder={`Reps for ${user.name}...`}
                         />
                     ))}
                 </Modal>}
             <h1></h1>
-            <Table rowData={exercises} colData={participants} addRowCallback={() => setShowModal(true)}></Table>
+            <Table rowData={exercises} colData={users} addRowCallback={() => setShowModal(true)}></Table>
         </>
     )
 }

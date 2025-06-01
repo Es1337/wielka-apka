@@ -1,12 +1,16 @@
+import { ExerciseType } from "../../types/TrainingTypes";
+import { GoogleUser } from "../../types/UserTypes";
 import "./Table.css"
 
 interface TableProps {
-    rowData: { name: string; results: string[] }[];
-    colData: string[];
+    rowData: ExerciseType[];
+    colData: GoogleUser[];
     addRowCallback: () => void;
 }
 
 const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRowCallback: addRowCallback }) => {    
+    console.log("Table rowData", rowData);
+    console.log("Table colData", colData);
     return (
         <div className="table-container">
             
@@ -14,7 +18,7 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRo
                 <thead>
                     <tr>
                         <th></th>
-                        {colData.map((col) => <th>{col}</th>)}
+                        {colData.map((col) => <th>{col.name}</th>)}
                     </tr>
                 </thead>
                 <tbody>
@@ -23,7 +27,7 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRo
                             <td>
                                 {row.name}
                             </td>
-                            {row.results.map((res) => <td className="actions">{res}</td>)}
+                            {row.sets.map((set) => <td className="actions">{set.weight}x{set.reps}</td>)}
                         </tr>
                     )}
                     <tr className="add-row">

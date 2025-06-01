@@ -90,7 +90,7 @@ const GroupView: React.FC = () => {
                 <h2>{groupName}</h2>
                 {
                     Object.values(trainings).map((training) => (
-                        <Link className='training-row' to={window.location.href + `/training/${training.id}`}>
+                        <Link className='training-row' to={window.location.href + `/training/${training._id}`}>
                             <span className='text-box'>{training.trainingName}</span>
                             <span className='text-box'>{training.date}</span>
                         </Link>
