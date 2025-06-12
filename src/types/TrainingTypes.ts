@@ -14,7 +14,6 @@ type ExerciseType = {
 }
 
 type SetType = {
-    _id: Object,
     user: GoogleUser[]
     weight: number,
     reps: number,

@@ -1,0 +1,18 @@
+@startuml
+
+participant User as u
+participant React as r
+participant Zod as z
+participant Modal as m
+participant API as a
+
+u-> r: Click on exercise row
+r -> z: Prepare exercise object
+z -> m: Open modal with existing exercise
+m --> z: New exercise data as Zod object
+z --> r: Handle new data
+r -> a: Send POST to API swapping whole exercise
+a --> r: Handle state change
+r --> u: Display updated training table
+
+@enduml

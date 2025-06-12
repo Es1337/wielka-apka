@@ -1,0 +1,44 @@
+
+ul {
+    marker: none;
+    list-style-type:none;
+    padding: 0;
+}
+
+.exercise-sets {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly
+}
+
+.user-item {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+}
+
+.modal-box {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background: orange;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    max-width: 4em;
+}
