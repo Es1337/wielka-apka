@@ -1,11 +1,10 @@
-import { ReactNode, useRef, Children, useEffect } from "react";
+import { ReactNode, useRef, Children, useEffect, useState } from "react";
 import "./Modal.css"
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { z, ZodType } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ExerciseSchema from "../../schemas/ExerciseSchema";
 import './DynamicModal.css';
-import { on } from "events";
 
 interface ModalProps {
     modalAction: (formData: z.infer<ZodType>) => void;
@@ -29,16 +28,18 @@ const DynamicModal: React.FC<ModalProps> = (
     const {
         control,
         handleSubmit,
-        formState: { errors, dirtyFields },
+        formState: { errors },
     } = form;
-
-    // Create dynamic forms
-    type FieldArrayItem = { id: string; weight: number; reps: number; user: string[] };
-
+    
     const { fields, append, remove } = useFieldArray({
         control,
         name: fieldArrayName,
     });
+
+    const [fieldEnabledMatrix, setFieldEnabledMatrix] = useState<boolean[][]>(
+        Array.from({length: users.length}, 
+            () => Array.from({length: fields.length}, 
+                () => false)));
 
     const modalRef = useRef<HTMLDivElement>(null);
     const closeModal = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -48,29 +49,15 @@ const DynamicModal: React.FC<ModalProps> = (
     }
 
     function onSubmit(values: z.infer<typeof ExerciseSchema>) {
-        // console.log(values);
-        // let form_data = new FormData();
-
-        // const get = <T, K extends keyof T>(obj: T, key: K) => obj[key]
-
-        // for (var key in values) {
-        //     console.log("Key", key);
-        //     const value = get(values, key as keyof typeof values);
-        //     console.log("Value", value);
-        //     form_data.append(key, typeof value === "object" ? JSON.stringify(value) : String(value));
-        // }
-
-        // for (var key of form_data.entries()) {
-        //     console.log(key[0] + ', ' + key[1]);
-        // }
         modalAction(values);
         onClose();
     }
 
-    const value = useWatch({
-        control,
-        name: fieldArrayName,
-    });
+    const handleFieldEnabledChange = (userIndex: number, setIndex: number) => {
+        let updatedMatrix = [...fieldEnabledMatrix];
+        updatedMatrix[userIndex][setIndex] = !updatedMatrix[userIndex][setIndex];
+        setFieldEnabledMatrix(updatedMatrix);
+    }
 
     return (
         <>
@@ -95,15 +82,15 @@ const DynamicModal: React.FC<ModalProps> = (
                         />
                         <ul className="exercise-sets">
                             {users.length > 0 &&
-                                users.map((user, index) => (
-                                    <li key={index} className="user-item">
+                                users.map((user, userIndex) => (
+                                    <li key={userIndex} className="user-item">
                                         <ul className="user-sets">
-                                            {fields.map((item, index) => (
+                                            {fields.map((item, setIndex) => (
                                                     <li key={item.id} className="field-array-item">
                                                         <div className="block">
                                                             <Controller
-                                                                name={`${fieldArrayName}.${index}.weight`}
-                                                                render={({ field }) => value?.[index]?.reps > 0 || value?.[index]?.weight > 0 ? (
+                                                                name={`${fieldArrayName}.${setIndex}.weight`}
+                                                                render={({ field }) => fieldEnabledMatrix[userIndex][setIndex] ? (
                                                                     <input
                                                                         type="number"
                                                                         name="weight"
@@ -112,16 +99,16 @@ const DynamicModal: React.FC<ModalProps> = (
                                                                 ) : <button
                                                                     type="button"
                                                                     className="add-btn"
-                                                                    onClick={() => append({ weight: 0, user: [], reps: 0 })}>
-                                                                    Add Set
+                                                                    onClick={() => handleFieldEnabledChange(userIndex, setIndex)}>
+                                                                    +
                                                                 </button>}
                                                                 control={control} />
                                                             <p className="error-message">
-                                                                {(errors[fieldArrayName] as any)?.[index]?.weight?.message ?? null}
+                                                                {(errors[fieldArrayName] as any)?.[setIndex]?.weight?.message ?? null}
                                                             </p>
                                                             <Controller
-                                                                name={`${fieldArrayName}.${index}.reps`}
-                                                                render={({ field }) => value?.[index]?.reps > 0 || value?.[index]?.weight > 0 ? (
+                                                                name={`${fieldArrayName}.${setIndex}.reps`}
+                                                                render={({ field }) => fieldEnabledMatrix[userIndex][setIndex] ? (
                                                                     <input
                                                                         type="number"
                                                                         name="reps"
@@ -130,13 +117,13 @@ const DynamicModal: React.FC<ModalProps> = (
                                                                 ) : null}
                                                                 control={control} />
                                                             <p className="error-message">
-                                                                {(errors[fieldArrayName] as any)?.[index]?.reps?.message ?? null}
+                                                                {(errors[fieldArrayName] as any)?.[setIndex]?.reps?.message ?? null}
                                                             </p>
                                                         </div>
                                                         <button
                                                             type="button"
                                                             className="remove-btn"
-                                                            onClick={() => remove(index)}
+                                                            onClick={() => {remove(setIndex); handleFieldEnabledChange(userIndex, setIndex)}}
                                                         >Delete</button>
                                                     </li>
                                                 ))}
