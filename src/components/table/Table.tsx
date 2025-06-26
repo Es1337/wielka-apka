@@ -27,7 +27,9 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRo
                             <td>
                                 {row.name}
                             </td>
-                            {row.sets.map((set) => <td className="actions">{set.weight}x{set.reps}</td>)}
+                            {row.series.map((series) => 
+                                series.sets.map((set) => 
+                                    <td className="actions">{set.weight}x{set.reps}</td>))}
                         </tr>
                     )}
                     <tr className="add-row">

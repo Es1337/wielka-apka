@@ -1,4 +1,4 @@
-import { GoogleUser } from "./UserTypes";
+import { GoogleUser } from "./UserTypes"
 
 type TrainingType = {
     _id: Object,
@@ -10,11 +10,15 @@ type TrainingType = {
 type ExerciseType = {
     _id: Object,
     name: string,
+    series: SeriesType[]
+}
+
+type SeriesType = {
     sets: SetType[]
 }
 
 type SetType = {
-    user: GoogleUser[]
+    user: GoogleUser,
     weight: number,
     reps: number,
 }
