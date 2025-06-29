@@ -10,17 +10,15 @@ type TrainingType = {
 type ExerciseType = {
     _id: Object,
     name: string,
-    series: SeriesType[]
-}
-
-type SeriesType = {
     sets: SetType[]
+    date: Date,
+    user: GoogleUser,
 }
 
 type SetType = {
-    user: GoogleUser,
     weight: number,
     reps: number,
+    count: number,
 }
 
 export type { TrainingType, ExerciseType, SetType };

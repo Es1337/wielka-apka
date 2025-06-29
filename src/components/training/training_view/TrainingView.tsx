@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom'
-import Menu from "../menu/Menu";
+import Menu from "../../menu/Menu";
 import Table from "../table/Table";
-import Modal from "../modal/Modal";
+import Modal from "../../modal/Modal";
 import { AxiosResponse } from "axios";
-import API from '../../api'
-import { GroupType } from "../../types/GroupTypes";
-import { SetType } from "../../types/TrainingTypes";
-import DynamicModal from "../modal/DynamicModal";
-import ExerciseSchema, { SetSchema } from "../../schemas/ExerciseSchema";
+import API from '../../../api'
+import { GroupType } from "../../../types/GroupTypes";
+import { ExerciseType, SetType } from "../../../types/TrainingTypes";
+import DynamicModal from "../../modal/DynamicModal";
+import ExerciseSchema, { SetSchema } from "../../../schemas/ExerciseSchema";
 import z, { infer as zodInfer } from "zod";
+import { GoogleUser } from "../../../types/UserTypes";
 
 
 const TrainingView: React.FC = () => {
@@ -19,7 +20,6 @@ const TrainingView: React.FC = () => {
     const [exercises, setExercises] = useState([])
     const [isAddModal, setIsAddModal] = useState(false);
     const [defaults, setDefaults] = useState<Record<string, any>>({});
-    // var defaults = {};
         
     useEffect(() => {
         async function getTrainingData() {
@@ -38,30 +38,42 @@ const TrainingView: React.FC = () => {
             }
         }
         getTrainingData();
-    }, []);
+    }, [showModal]);
 
-    function addExercise(formData: z.infer<typeof ExerciseSchema>) {
-        let exerciseSets: SetType[] = []
-        console.log("Form Data", formData);
-        for (let set of formData.sets) {
-            exerciseSets.push({
-                weight: set.weight,
-                reps: set.reps,
-                user: set.user || []
-            });
+    async function addExerciseAPI(newExerciseName: String): Promise<ExerciseType | undefined> {
+        let exerciseResponse: AxiosResponse;
+        try {
+            exerciseResponse = await API.post(
+                `/group/${groupId}/training/${trainingId}/exercise`, 
+                { exerciseName: newExerciseName }, 
+                { withCredentials: true }
+            );
+            let payload: ExerciseType = exerciseResponse.data;
+            console.log(payload);
+            return payload;
+        } catch (e) {
+            console.error('Failure adding group');
+            return;
         }
-        setExercises([...exercises, {
-            name: formData.get("exercise-name").toString(),
-            sets: exerciseSets
-        }])
+    }
+
+    function addExercise(formData: FormData) {
+        addExerciseAPI(
+            formData.get('exercise-name').toString()
+        ).then((exercise) => {
+            if (exercise) {
+                setExercises((exercises) => ([
+                    ...exercises,
+                    exercise
+                ]));
+            }
+            setShowModal(false);
+        });
     }
 
     function defaultValues(isAdd: boolean = false): Record<string, any> {
         if (isAdd) {
-            return  {
-                name: '',
-                sets: [] as typeof SetSchema[],
-            }
+            return  null;
         } else {
             return API.get(
                     `/group/${groupId}/training/${trainingId}/exercise/exerciseName`, 
@@ -86,10 +98,14 @@ const TrainingView: React.FC = () => {
         <>
             <Menu/>
             {showModal && 
-                <DynamicModal modalAction={addExercise} onClose={onModalClose}
-                    modalHeader="Add Exercise" users={users} modalSchemaType={ExerciseSchema} 
-                    fieldArrayName="sets" defaultValues={defaults}>
-                </DynamicModal>}
+                <Modal modalAction={addExercise} onClose={onModalClose} modalHeader="Add Exercise">
+                        <input
+                        type="text"
+                        name="exercise-name"
+                        placeholder="Enter Name..."
+                        required
+                    />
+                </Modal>}
             <h1></h1>
             <Table rowData={exercises} colData={users} addRowCallback={onAddRow}></Table>
         </>

@@ -4,9 +4,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css'
 import Home from './pages/Home';
 import GroupView from './components/group_view/GroupView';
-import TrainingView from './components/training_view/TrainingView';
+import TrainingView from './components/training/training_view/TrainingView';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import PrivateRoutes from './PrivateRoutes';
+import AddExercise from './components/training/add_training/AddExercise';
 
 const router = createBrowserRouter([
   { 
@@ -20,7 +21,10 @@ const router = createBrowserRouter([
         element: <GroupView/> },
       { 
         path: '/group/:groupId/training/:trainingId', 
-        element: <TrainingView/> }
+        element: <TrainingView/> },
+      { 
+        path: '/group/:groupId/training/:trainingId/add-exercise', 
+        element: <AddExercise/> },
     ]
   }
 ]);
