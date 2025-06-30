@@ -8,6 +8,7 @@ import TrainingView from './components/training/training_view/TrainingView';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import PrivateRoutes from './PrivateRoutes';
 import AddExercise from './components/training/add_training/AddExercise';
+import ModifyExercise from './components/training/modify_exercise/ModifyExercise';
 
 const router = createBrowserRouter([
   { 
@@ -25,6 +26,9 @@ const router = createBrowserRouter([
       { 
         path: '/group/:groupId/training/:trainingId/add-exercise', 
         element: <AddExercise/> },
+      { 
+        path: '/group/:groupId/training/:trainingId/modify-exercise', 
+        element: <ModifyExercise/> },
     ]
   }
 ]);

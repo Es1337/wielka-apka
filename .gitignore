@@ -24,4 +24,8 @@ dist-ssr
 *.sw?
 
 .env
-ideas/exercise_schema.jpg
+
+# Sketch ideas
+*.jpg
+*.png
+

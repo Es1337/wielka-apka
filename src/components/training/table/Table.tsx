@@ -2,14 +2,18 @@ import _ from "lodash";
 import { ExerciseType } from "../../../types/TrainingTypes";
 import { GoogleUser } from "../../../types/UserTypes";
 import "./Table.css"
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface TableProps {
     rowData: ExerciseType[];
     colData: GoogleUser[];
     addRowCallback: () => void;
+    handleRowClick: (exerciseName: string, exerciseIds: Object[]) => void;
 }
 
-const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRowCallback: addRowCallback }) => {
+const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRowCallback: addRowCallback, handleRowClick: handleRowClick }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     console.log("Table rowData", rowData);
     console.log("Table colData", colData);
     // Sort by exercise name, then by user
@@ -18,6 +22,13 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRo
         if (nameCompare !== 0) return nameCompare;
         return String(a.user._id).localeCompare(String(b.user._id));
     });
+
+    // function handleRowClick(exerciseName: string, exerciseIds: Object[]) {
+    //     navigate(
+    //         location.pathname + '/modify-exercise',
+    //         { state: { exerciseName, exerciseIds } }
+    //     );
+    // }
 
     let modifiedRowData = _.groupBy(rowData, 'name');
 
@@ -35,7 +46,7 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRo
                 </thead>
                 <tbody>
                     {Object.entries(modifiedRowData).map(([exerciseName, rows]) => (
-                        <tr key={exerciseName}>
+                        <tr key={exerciseName} onClick={() => handleRowClick(exerciseName, rows.map(({_id}) => ({_id})))}>
                             <td>
                                 {exerciseName}
                             </td>

@@ -37,7 +37,7 @@
     text-overflow: ellipsis;
 }
 
-.table tbody td:nth-child(n+2):hover {
+.table tbody tr:nth-child(n+1):hover {
     background-color: darkseagreen;
 }
 

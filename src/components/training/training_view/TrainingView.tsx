@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import Menu from "../../menu/Menu";
 import Table from "../table/Table";
 import Modal from "../../modal/Modal";
 import { AxiosResponse } from "axios";
 import API from '../../../api'
 import { GroupType } from "../../../types/GroupTypes";
-import { ExerciseType, SetType } from "../../../types/TrainingTypes";
-import DynamicModal from "../../modal/DynamicModal";
-import ExerciseSchema, { SetSchema } from "../../../schemas/ExerciseSchema";
-import z, { infer as zodInfer } from "zod";
-import { GoogleUser } from "../../../types/UserTypes";
+import { ExerciseType } from "../../../types/TrainingTypes";
 
 
 const TrainingView: React.FC = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [users, setUsers] = useState([]);
     const [showModal, setShowModal] = useState(false)
     const { groupId, trainingId } = useParams();
-    const [exercises, setExercises] = useState([])
+    const [exercises, setExercises] = useState([]);
+    const [selectedExercises, setSelectedExercises] = useState([]);
     const [isAddModal, setIsAddModal] = useState(false);
     const [defaults, setDefaults] = useState<Record<string, any>>({});
-        
+
     useEffect(() => {
         async function getTrainingData() {
             let groupResponse: AxiosResponse;
@@ -40,19 +39,33 @@ const TrainingView: React.FC = () => {
         getTrainingData();
     }, [showModal]);
 
+    useEffect(() => {
+        if (selectedExercises.length === 0) {
+            console.log("No exercises selected");
+            return;
+        }
+        console.log("Selected Exercises updated:", selectedExercises);
+        navigate(
+            location.pathname + '/modify-exercise',
+            { state: { exerciseName: selectedExercises[0]?.name, exercises: selectedExercises, users, groupId, trainingId } }
+        );
+    }, [selectedExercises]);
+
     async function addExerciseAPI(newExerciseName: String): Promise<ExerciseType | undefined> {
         let exerciseResponse: AxiosResponse;
         try {
             exerciseResponse = await API.post(
-                `/group/${groupId}/training/${trainingId}/exercise`, 
-                { exerciseName: newExerciseName }, 
+                `/group/${groupId}/training/${trainingId}/exercise`,
+                {
+                    exerciseName: newExerciseName,
+                },
                 { withCredentials: true }
             );
             let payload: ExerciseType = exerciseResponse.data;
             console.log(payload);
             return payload;
         } catch (e) {
-            console.error('Failure adding group');
+            console.error('Failure adding exercise in group: ', groupId);
             return;
         }
     }
@@ -73,14 +86,14 @@ const TrainingView: React.FC = () => {
 
     function defaultValues(isAdd: boolean = false): Record<string, any> {
         if (isAdd) {
-            return  null;
+            return null;
         } else {
             return API.get(
-                    `/group/${groupId}/training/${trainingId}/exercise/exerciseName`, 
-                    { withCredentials: true })
+                `/group/${groupId}/training/${trainingId}/exercise/exerciseName`,
+                { withCredentials: true })
         }
     }
-    
+
     function onAddRow(): void {
         setDefaults(defaultValues(true));
         console.log("Default Values", defaults);
@@ -88,26 +101,37 @@ const TrainingView: React.FC = () => {
         setIsAddModal(true);
     }
 
-    function onModalClose(): void {
-       setShowModal(false);
-       setIsAddModal(false);
-       setDefaults({});
+    function handleRowClick(exerciseName: string, exerciseIds: { _id: string }[]) {
+        console.log("Exercise IDs", exerciseIds);
+        let mappedIds = exerciseIds.map((exerciseId) => exerciseId._id);
+        let temp = exercises.filter((exercise) => {
+            console.log("Exercise ID", String(exercise._id));
+            console.log("Mapped Exercise ID", exercise._id);
+            return mappedIds.includes(String(exercise._id))
+        });
+        console.log("Filtered Exercises", temp);
+        setSelectedExercises(temp);
     }
-    
+
+    function onModalClose(): void {
+        setShowModal(false);
+        setIsAddModal(false);
+        setDefaults({});
+    }
+
     return (
         <>
-            <Menu/>
-            {showModal && 
+            <Menu />
+            {showModal &&
                 <Modal modalAction={addExercise} onClose={onModalClose} modalHeader="Add Exercise">
-                        <input
+                    <input
                         type="text"
                         name="exercise-name"
                         placeholder="Enter Name..."
-                        required
-                    />
+                        required />
                 </Modal>}
             <h1></h1>
-            <Table rowData={exercises} colData={users} addRowCallback={onAddRow}></Table>
+            <Table rowData={exercises} colData={users} addRowCallback={onAddRow} handleRowClick={handleRowClick}></Table>
         </>
     )
 }
