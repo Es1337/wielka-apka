@@ -16,6 +16,7 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRo
     const location = useLocation();
     console.log("Table rowData", rowData);
     console.log("Table colData", colData);
+    
     // Sort by exercise name, then by user
     rowData.sort((a, b) => {
         const nameCompare = a.name.localeCompare(b.name);
@@ -23,19 +24,12 @@ const Table: React.FC<TableProps> = ({ rowData: rowData, colData: colData, addRo
         return String(a.user._id).localeCompare(String(b.user._id));
     });
 
-    // function handleRowClick(exerciseName: string, exerciseIds: Object[]) {
-    //     navigate(
-    //         location.pathname + '/modify-exercise',
-    //         { state: { exerciseName, exerciseIds } }
-    //     );
-    // }
-
     let modifiedRowData = _.groupBy(rowData, 'name');
 
     console.log("Modified Row Data", modifiedRowData);
 
     return (
-        <div className="table-container">
+        <div className="training-container">
 
             <table className="table">
                 <thead>

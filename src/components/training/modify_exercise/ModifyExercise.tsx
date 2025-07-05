@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom";
 import ExerciseTable from "../table/ExerciseTable";
 import Modal from "../../modal/Modal";
 import Menu from "../../menu/Menu";
-import { use, useEffect, useState } from "react";
+import { ChangeEvent, use, useEffect, useState } from "react";
 import { ExerciseType, SetType } from "../../../types/TrainingTypes";
 import { AxiosResponse } from "axios";
 import API from "../../../api";
@@ -24,9 +24,14 @@ const ModifyExercise: React.FC = () => {
     console.log("Location state", location.state);
     const { exerciseName, exercises: passedExercises, users: passedUsers, groupId, trainingId } = location.state as ModifyExerciseProps;
     const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [groupedExercises, setGroupedExercises] = useState<Record<string, ExerciseType[]>>(_.groupBy(passedExercises, 'user'));
     const [users, setUsers] = useState<GoogleUser[]>(passedUsers || []);
     const [activeUser, setActiveUser] = useState<string>();
+    const [activeSetIdx, setActiveSetIdx] = useState<number>();
+    const [activeReps, setActiveReps] = useState<number>();
+    const [activeWeight, setActiveWeight] = useState<number>();
+
 
     useEffect(() => {
         async function getTrainingData() {
@@ -64,7 +69,29 @@ const ModifyExercise: React.FC = () => {
             console.log(payload);
             return payload;
         } catch (e) {
-            console.error('Failure adding exercise in group: ', groupId);
+            console.error('Failure adding set in group: ', groupId);
+            return;
+        }
+    }
+
+    async function modifySetAPI(exerciseId: String, oldSet: SetType, weight: number, reps: number): Promise<SetType | undefined> {
+        let exerciseResponse: AxiosResponse;
+        try {
+            exerciseResponse = await API.put(
+                `/group/${groupId}/training/${trainingId}/exercise/${exerciseId}/set/${oldSet.count}`,
+                {
+                    set: {
+                        weight: weight,
+                        reps: reps,
+                    }
+                },
+                { withCredentials: true }
+            );
+            let payload: SetType = exerciseResponse.data;
+            console.log(payload);
+            return payload;
+        } catch (e) {
+            console.error('Failure modifying set in group: ', groupId);
             return;
         }
     }
@@ -80,7 +107,7 @@ const ModifyExercise: React.FC = () => {
             console.log(payload);
             return exerciseResponse.status === 200;
         } catch (e) {
-            console.error('Failure adding exercise in group: ', groupId);
+            console.error('Failure removing set in group: ', groupId);
             return;
         }
     }
@@ -118,14 +145,52 @@ const ModifyExercise: React.FC = () => {
         })
     }
 
-    function onAddSet(userId: String): void {
-        setShowModal(true);
-        setActiveUser(userId as string);
+    function modifySet(formData: FormData) {
+        const exerciseId = groupedExercises[activeUser as string][0]._id;
+        const activeSet = groupedExercises[activeUser as string][0].sets[activeSetIdx];
+        modifySetAPI(
+            exerciseId as String,
+            activeSet,
+            activeWeight,
+            activeReps
+        )
+        .then((set: SetType | undefined) => {
+            if (set) {
+                setGroupedExercises((prevExercises) => {
+                    const updatedExercises = { ...prevExercises };
+                    const userExercises = updatedExercises[activeUser as string]
+                        ? [...updatedExercises[activeUser as string]]
+                        : [];
+                    if (userExercises.length > 0) {
+                        const updatedSets = [
+                            ...userExercises[0].sets,
+                        ];
+                        updatedSets[activeSetIdx] = set;
+                        userExercises[0] = {
+                            ...userExercises[0],
+                            sets: updatedSets
+                        };
+                        updatedExercises[activeUser as string] = userExercises;
+                    }
+                    return updatedExercises;
+                });
+            }
+            setShowModal(false);
+            setActiveUser(null);
+        })
     }
 
-    function handleRowClick(): void {
-        // This function can be used to handle row clicks if needed
-        // For now, it does nothing
+    function onAddSet(userId: string): void {
+        setShowModal(true);
+        setActiveUser(userId);
+    }
+
+    function handleRowClick(userId: string, setIdx: number): void {
+        setShowUpdateModal(true);
+        setActiveUser(userId);
+        setActiveSetIdx(setIdx);
+        setActiveReps(groupedExercises[userId][0].sets[setIdx].reps);
+        setActiveWeight(groupedExercises[userId][0].sets[setIdx].weight);
     }
 
     function handleRemoveSet(userId: string, count: number): void {
@@ -147,9 +212,24 @@ const ModifyExercise: React.FC = () => {
         });
     }
 
+    function handleUpdateModal(e: ChangeEvent, userId: string, setIdx: number): void {
+        const target = e.target as HTMLInputElement;
+        target.name === 'set-weight'
+            ? setActiveWeight(parseFloat(target.value || '0'))
+            : setActiveReps(parseInt(target.value || '0'));
+    }
+
     function onModalClose(): void {
         setShowModal(false);
         setActiveUser(null);
+    }
+
+    function onUpdateModalClose(): void {
+        setShowUpdateModal(false);
+        setActiveUser(null);
+        setActiveSetIdx(null);
+        setActiveReps(null);
+        setActiveWeight(null);
     }
 
     return (
@@ -167,6 +247,23 @@ const ModifyExercise: React.FC = () => {
                         type="text"
                         name="set-reps"
                         placeholder="Enter Reps..."
+                        required />
+                </Modal>}
+            {showUpdateModal &&
+                <Modal modalAction={modifySet} onClose={onUpdateModalClose} modalHeader="Modify Set">
+                    <input
+                        type="text"
+                        name="set-weight"
+                        placeholder="Enter Weight..."
+                        value={activeWeight}
+                        onChange={(e) => handleUpdateModal(e, activeUser as string, activeSetIdx as number)}
+                        required />
+                    <input
+                        type="text"
+                        name="set-reps"
+                        placeholder="Enter Reps..."
+                        value={activeReps}
+                        onChange={(e) => handleUpdateModal(e, activeUser as string, activeSetIdx as number)}
                         required />
                 </Modal>}
             <h1></h1>

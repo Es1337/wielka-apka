@@ -24,7 +24,7 @@ const Modal: React.FC<ModalProps> = ({ modalAction, onClose, modalHeader, childr
                     <h1>{modalHeader}</h1>
                     <form action={modalAction}>
                         {children}
-                        <button type="submit" className="submit-btn">Add</button>
+                        <button type="submit" className="submit-btn">Submit</button>
                     </form>
                 </div>
             </div>
