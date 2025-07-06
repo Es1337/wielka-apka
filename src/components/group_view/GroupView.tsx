@@ -10,7 +10,7 @@ import { TrainingType } from '../../types/TrainingTypes'
 
 const GroupView: React.FC = () => {
     const [showModal, setShowModal] = useState(false)
-    const [trainings, setTrainings] = useState([])
+    const [trainings, setTrainings] = useState<TrainingType[]>([])
     const { groupId } = useParams();
 
     const [groupName, setGroupName] = useState('');
@@ -26,7 +26,7 @@ const GroupView: React.FC = () => {
                 setGroupName(groupPayload.groupName);
 
                 trainingsResponse = await API.get("/group/" + groupId + "/training", { withCredentials: true });
-                let trainingPayload = trainingsResponse.data;
+                let trainingPayload: TrainingType[] = trainingsResponse.data;
                 console.log(trainingPayload);
                 setTrainings(trainingPayload);
             } catch (e) {
@@ -59,7 +59,7 @@ const GroupView: React.FC = () => {
                 setTrainings((trainings) => ([
                     ...trainings,
                     {
-                        id: training._id,
+                        _id: training._id,
                         trainingName: training.trainingName,
                         date: training.date,
                         exercises: training.exercises
@@ -90,9 +90,9 @@ const GroupView: React.FC = () => {
                 <h2>{groupName}</h2>
                 {
                     Object.values(trainings).map((training) => (
-                        <Link className='training-row' to={window.location.href + `/training/${training._id}`}>
+                        <Link key={`${training._id}`} className='training-row' to={window.location.href + `/training/${training._id}`}>
                             <span className='text-box'>{training.trainingName}</span>
-                            <span className='text-box'>{training.date}</span>
+                            <span className='text-box'>{new Date(training.date).toLocaleDateString('pl-PL', {year: "2-digit", month: "numeric", day: "2-digit"})}</span>
                         </Link>
                     ))
                 }
