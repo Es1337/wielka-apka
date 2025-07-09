@@ -9,12 +9,11 @@ const PrivateRoutes: React.FC = () => {
     function isAuthenticated() {
         console.log("Authenticating")
         API.get("/user/checkLoginStatus", {withCredentials: true}).then(res => {
-            if (res.data.success) {
+            if (res.status === 200 && res.data.success === true) {
                 localStorage.setItem("isAuth", "true");
-            } else {
-                localStorage.removeItem("isAuth")
-            }
-        })
+            }}).catch(err =>{
+                localStorage.removeItem("isAuth");
+            })
     }
 
     useEffect(() => {

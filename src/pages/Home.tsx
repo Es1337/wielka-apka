@@ -39,7 +39,7 @@ const Home: React.FC = () => {
                 } else {
                     const data: AxiosResponse = await API.get('/user/checkLoginStatus', {withCredentials: true});
                     const payload:CheckLoginResponse = data.data;
-                    if (payload.success) {
+                    if (payload.success === true) {
                         setLoginStatus(true);
                     }
                 }
@@ -55,8 +55,12 @@ const Home: React.FC = () => {
     useEffect(() => {
         async function getGroupsForUser() {
             try {
-                const data: AxiosResponse = await API.get('/group/user', {withCredentials: true});
-                const payload:GroupType[] = data.data;
+                const response: AxiosResponse = await API.get('/group/user', {withCredentials: true});
+                if (response.status !== 200) {
+                    logout();
+                    return;
+                }
+                const payload:GroupType[] = response.data;
                 setGroups(payload)
             } catch (e) {
                 console.log(e)
