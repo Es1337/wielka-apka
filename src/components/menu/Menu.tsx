@@ -23,12 +23,18 @@ const Menu: React.FC = () => {
         document.removeEventListener("click", sidebarCloseHandler)
         }
     })
+
+    function goToProfile() {
+        navigate('/profile');
+        setSidebarToggled(false);
+    }
     
     return (
         <>
             <button className='sidebar-toggle' onClick={() => setSidebarToggled(true)}>Menu</button>
             <nav className={`${sidebarToggled ? 'visible' : ''} sidebar`} ref={sidebarRef}>
                 <button onClick={() => navigate(-1)}>Back</button>
+                <button onClick={() => goToProfile()}>Profile</button>
             </nav>
         </>
     )

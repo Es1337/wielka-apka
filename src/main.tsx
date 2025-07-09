@@ -9,6 +9,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import PrivateRoutes from './PrivateRoutes';
 import AddExercise from './components/training/add_training/AddExercise';
 import ModifyExercise from './components/training/modify_exercise/ModifyExercise';
+import Profile from './pages/Profile';
 
 const router = createBrowserRouter([
   { 
@@ -17,6 +18,9 @@ const router = createBrowserRouter([
   { 
     element: <PrivateRoutes/>, 
     children: [
+      {
+        path: '/profile',
+        element: <Profile/> },
       { 
         path: '/group/:groupId', 
         element: <GroupView/> },
