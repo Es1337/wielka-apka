@@ -2,21 +2,78 @@
     margin: 3px 0;
     padding: 5px 0;
     width: 50%;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    background-color: darkgrey;
-    color: black;
-    border-top: 0.5px solid green;
+    border: 2px solid oklch(0.9 0.15 80);
     border-radius: 5px;
     text-decoration: none;
     transition: background-color 0.1s ease;
 }
 
 .training-row:hover {
-    background-color: #e0e0e0; /* Changes background color on hover */
+    background-color: oklch(0.9 0.02 80);
+    color: oklch(0.3 0.00001 80);
 }
 
-.text-box {
-    margin: 0 10px;
+.training-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    position: relative;
+}
+
+.training-exercises {
+    margin: 4px 0;
+}
+
+.exercise-box {
+    color: black;
+    border-radius: 4px;
+    background-color: oklch(0.9 0.15 80);
+    padding: 4px 8px;
+    margin: 8px;
+}
+
+.copy-box {
+    display: flex;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid oklch(0.9 0.15 80);
+    border-radius: 4px;
+}
+
+.copy-box:hover {
+    background-color: oklch(0.3 0.00001 80);
+    color:  oklch(0.9 0.15 80);
+}
+
+span {
+    margin: 0 12px;
+}
+
+.text-box:last-of-type{
+    position: absolute;
+    right: 0px;
+    display: flex;
+}
+
+.delete-box {
+    font-size: 36px;
+    color:  oklch(0.9 0.15 80);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-box:hover {
+    background-color: oklch(0.3 0.00001 80);
+    border-radius: 4px;
+    color: oklch(0.7 0.25 30);
+    cursor: pointer;
 }
 
 .training-container {
