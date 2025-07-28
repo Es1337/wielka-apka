@@ -1,25 +1,48 @@
 import { MdModeEdit } from "react-icons/md";
 import "./Profile.css";
 import Menu from "../components/menu/Menu";
+import { useEffect, useState } from "react";
+import UserService from "../services/UserService";
+import { User } from "../types/UserTypes";
 
 const Profile: React.FC = () => {
+    const [userInfo, setUserInfo] = useState<User>({
+        name: "",
+        email: "",
+        picture: "",
+        friends: []
+    });
+
+    useEffect(() => {
+        async function fetchUserProfile() {
+            try {
+                let user = await UserService.getUserProfile();
+                setUserInfo(user.data);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        }
+        fetchUserProfile();
+    }, []);
+
     return (<>
-        <Menu/>   
+        <Menu/>
+
         <h1>Profile Page</h1>
         <div className="profile-page">
 
             <div className="main-panel">
                 <div className="profile-header">
                     <div className="profile-picture-container">
-                        <img className="profile-picture" src="https://placehold.co/200x200" alt="Profile Picture" />
+                        <img className="profile-picture" src={userInfo.picture} alt="Profile Picture" />
                         <button className="change-picture">
                             <MdModeEdit />
                         </button>
                     </div>
                     <div className="profile-info-container">
                         <div className="profile-info">
-                            <div className="info-row"><span className="info-label">Username</span><span className="info-data">Placeholder</span></div>
-                            <div className="info-row"><span className="info-label">Email</span><span className="info-data">Placeholder</span></div>
+                            <div className="info-row"><span className="info-label">Username</span><span className="info-data">{userInfo.name}</span></div>
+                            <div className="info-row"><span className="info-label">Email</span><span className="info-data">{userInfo.email}</span></div>
                             <div className="info-row"><span className="info-label">Name</span><span className="info-data">Placeholder</span></div>
                             <div className="info-row"><span className="info-label">DOB</span><span className="info-data">Placeholder</span></div>
                             <div className="info-row"><span className="info-label">Joined</span><span className="info-data">Placeholder</span></div>

@@ -6,4 +6,11 @@ type GoogleUser = {
     picture: string
 }
 
-export type { GoogleUser };
+type User = {
+    email: string,
+    name: string,
+    picture: string,
+    friends: Object[],
+}
+
+export type { GoogleUser, User };
