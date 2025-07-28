@@ -1,0 +1,150 @@
+.profile-page {
+    display: flex;
+    flex-direction: row;
+    align-items: space-between;
+    justify-content: center;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 2px solid oklch(0.9 0.1 70);
+    border-radius: 8px;
+}
+
+.profile-picture-container {
+    position: relative; 
+    display: inline-block;
+    background-color: oklch(0.15 0.00001 80);
+    border-radius: 32px;
+    margin-bottom: 32px;
+    width: 100%;
+}
+
+.profile-picture {
+    padding: 16px;
+    border-radius: 50%;
+}
+
+.change-picture {
+    padding: 0;
+    border-radius: 50%;
+    width: 48px; 
+    height: 48px; 
+    position: absolute;
+    bottom: 4px; 
+    right: 4px;  
+    z-index: 2;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-info-container {
+    position: relative; 
+    display: inline-block;
+    background-color: oklch(0.15 0.00001 80);
+    border-radius: 32px;
+    width: 100%;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 32px 56px 32px;
+}
+
+.info-row {
+    width: 100%;
+    padding: 8px;
+    border-top: 2px solid oklch(0.9 0.1 70);
+    display: flex;
+    align-content: center;
+}
+
+.info-row:hover {
+    background-color: oklch(0.3 0.00001 80);
+}
+
+.info-label {
+    font-weight: bold;
+    text-align: left;
+    width: 33%;    
+}
+
+.info-data {
+    width: 67%;
+    text-align: right;
+}
+
+.change-info {
+    padding: 0;
+    border-radius: 50%;
+    width: 48px; 
+    height: 48px; 
+    position: absolute;
+    bottom: 4px; 
+    right: 4px;  
+    z-index: 2;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 16px;
+}
+
+.recent-groups {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.group-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.group-item {
+    width: 90%;
+    margin: 4px 0;
+    padding: 8px;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 4px;
+    border: 2px solid transparent;
+}
+
+.group-item:nth-child(odd) {
+    background-color: oklch(0.3 0.00001 80);
+}
+
+.group-item:hover {
+    background-color: oklch(0.4 0.00001 80);
+    border: 2px solid oklch(0.9 0.1 70);
+}
+
+.group-members {
+    display: flex;
+    flex-direction: row;
+    /* align-items: center; */
+    justify-items: space-evenly;
+    width: 10%;
+}
