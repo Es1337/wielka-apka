@@ -4,14 +4,17 @@ import Menu from "../components/menu/Menu";
 import { useEffect, useState } from "react";
 import UserService from "../services/UserService";
 import { User } from "../types/UserTypes";
+import { GroupType } from "../types/GroupTypes";
 
 const Profile: React.FC = () => {
     const [userInfo, setUserInfo] = useState<User>({
-        name: "",
-        email: "",
-        picture: "",
+        name: null,
+        email: null,
+        picture: null,
         friends: []
     });
+
+    const [groups, setGroups] = useState<GroupType[]>([]);
 
     useEffect(() => {
         async function fetchUserProfile() {
@@ -22,6 +25,16 @@ const Profile: React.FC = () => {
                 console.error("Error fetching user profile:", error);
             }
         }
+
+        async function fetchUserGroups() {
+            try {
+                let groupResponse = await UserService.getGroupsForUser();
+                setGroups(groupResponse.data);
+            } catch (error) {
+                console.error("Error fetching user groups:", error);
+            }
+        }
+        fetchUserGroups();
         fetchUserProfile();
     }, []);
 
@@ -56,30 +69,16 @@ const Profile: React.FC = () => {
                     <div className="recent-groups">
                         <h2>Recent Groups</h2>
                         <div className="group-list">
-                            <div className="group-item">
-                                <span className="group-name">Group 1</span>
-                                <span className="group-members">
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                </span>
-                            </div>
-                            <div className="group-item">
-                                <span className="group-name">Group 2</span>
-                                <span className="group-members">
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                </span>
-                            </div>
-                            <div className="group-item">
-                                <span className="group-name">Group 3</span>
-                                <span className="group-members">
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                    <img src="https://placehold.co/20x20" alt="Profile Picture" />
-                                </span>
-                            </div>
+                            {groups.map((group) => (
+                                <div key={group._id.toLocaleString()} className="group-item">
+                                    <span className="group-name">{group.groupName}</span>
+                                    <span className="group-members">
+                                        {group.users.map((user) => (
+                                            <img key={user.toLocaleString()} src="https://placehold.co/20x20" alt="Profile Picture" />
+                                        ))}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
