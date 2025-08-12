@@ -148,3 +148,25 @@
     justify-items: space-evenly;
     width: 10%;
 }
+
+.friends-card {
+    min-width: 320px;
+}
+
+.friend-data {
+    text-align: left;
+    width: 67%;   
+}
+
+.friend-online {
+    display: flex;
+    align-items: center;
+    color: oklch(0.75 0.3 140);
+}
+
+.friend-offline {
+    display: flex;
+    align-items: center;
+    color: oklch(0.75 0.0 0);
+}
+
