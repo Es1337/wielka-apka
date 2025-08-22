@@ -21,6 +21,9 @@ const router = createBrowserRouter([
       {
         path: '/profile',
         element: <Profile/> },
+      {
+        path: '/profile/:userId',
+        element: <Profile/> },
       { 
         path: '/group/:groupId', 
         element: <GroupView/> },

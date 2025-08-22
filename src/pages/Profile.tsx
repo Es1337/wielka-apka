@@ -1,14 +1,16 @@
-import { MdModeEdit } from "react-icons/md";
 import "./Profile.css";
 import Menu from "../components/menu/Menu";
 import { useEffect, useState } from "react";
 import UserService from "../services/UserService";
-import { User } from "../types/UserTypes";
+import { GoogleUser, User } from "../types/UserTypes";
 import { GroupType } from "../types/GroupTypes";
 import ProfileCard from "../components/profile/ProfileCard";
 import FriendsCard from "../components/profile/FriendsCard";
+import { useParams } from "react-router";
 
 const Profile: React.FC = () => {
+    const { userId } = useParams();
+
     const [userInfo, setUserInfo] = useState<User>({
         name: null,
         email: null,
@@ -22,26 +24,37 @@ const Profile: React.FC = () => {
 
 
     useEffect(() => {
-        async function fetchUserProfile() {
+        async function fetchUserProfile(userId?: string) {
             try {
-                let user = await UserService.getUserProfile();
+                let user = userId !== undefined ? 
+                    await UserService.getUserProfile(userId) 
+                    : await UserService.getSelfProfile();
                 setUserInfo(user.data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
             }
         }
 
-        async function fetchUserGroups() {
+        async function fetchUserGroups(userId?: string) {
             try {
-                let groupResponse = await UserService.getGroupsForUser();
+                let groupResponse = userId !== undefined ? 
+                    await UserService.getGroupsForUser(userId)
+                    : await UserService.getGroupsForSelf();
                 setGroups(groupResponse.data);
             } catch (error) {
                 console.error("Error fetching user groups:", error);
             }
         }
-        fetchUserGroups();
-        fetchUserProfile();
-    }, []);
+
+        if (userId !== undefined) {
+            fetchUserGroups(userId);
+            fetchUserProfile(userId);
+            showProfileCard();
+        } else {
+            fetchUserGroups();
+            fetchUserProfile();
+        }
+    }, [userId]);
 
     const showFriendsCard = () => {
         setShowFriends(true);
@@ -59,7 +72,8 @@ const Profile: React.FC = () => {
         <h1>Profile Page</h1>
         <div className="profile-page">
             {showProfile && <ProfileCard userInfo={userInfo} groups={groups}/>}
-            {showFriends && <FriendsCard backCallback={showProfileCard}/>}
+            {showFriends && 
+                <FriendsCard backCallback={showProfileCard} friendsList={userInfo.friends as GoogleUser[]}/>}
             <div className="side-panel">
                 <button className="settings-btn">Settings</button>
                 <button className="analytics-btn">Analytics</button>
